@@ -58,7 +58,7 @@ services:
   - type: web
     name: universebyte-crm-frontend
     runtime: static
-    plan: free
+    plan: "free"
     branch: main
     rootDir: frontend
     buildCommand: npm install --include=dev && npm run build
