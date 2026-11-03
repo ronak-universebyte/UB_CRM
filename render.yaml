@@ -1,3 +1,4 @@
+
 services:
   # ============================================================================
   # Backend API Web Service - UniverseByte CRM
@@ -53,12 +54,11 @@ services:
         sync: false
 
   # ============================================================================
-  # Frontend Static Site - UniverseByte CRM (SPA Client with Custom Domain Support)
+  # Frontend Static Site - UniverseByte CRM
   # ============================================================================
   - type: web
     name: universebyte-crm-frontend
     runtime: static
-    plan: "free"
     branch: main
     rootDir: frontend
     buildCommand: npm install --include=dev && npm run build
