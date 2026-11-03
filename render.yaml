@@ -1,6 +1,6 @@
 services:
   # ============================================================================
-  # Backend API Web Service
+  # Backend API Web Service - UniverseByte CRM
   # ============================================================================
   - type: web
     name: universebyte-crm-backend
@@ -28,11 +28,27 @@ services:
         sync: false
       - key: JWT_REFRESH_EXPIRY
         value: 7d
+      - key: FRONTEND_URL
+        sync: false
       - key: CORS_ORIGIN
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
+      - key: META_ACCESS_TOKEN
+        sync: false
+      - key: META_PHONE_NUMBER_ID
+        sync: false
+      - key: META_WABA_ID
+        sync: false
+      - key: META_WEBHOOK_VERIFY_TOKEN
+        sync: false
+      - key: META_APP_SECRET
         sync: false
 
   # ============================================================================
-  # Frontend Static Site
+  # Frontend Static Site - UniverseByte CRM (SPA Client with Custom Domain Support)
   # ============================================================================
   - type: web
     name: universebyte-crm-frontend
@@ -51,4 +67,3 @@ services:
         value: UniverseByte CRM
       - key: VITE_APP_TAGLINE
         value: UniverseByte – Technology Redefined
-

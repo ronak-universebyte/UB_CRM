@@ -24,6 +24,7 @@ router.get('/health', (_req, res) => {
 
   res.status(200).json(
     ApiResponse.success('UniverseByte CRM API is operational', {
+      status: 'healthy',
       service: 'universebyte-crm-backend',
       timestamp: new Date().toISOString(),
       uptimeSeconds: Math.floor(process.uptime()),

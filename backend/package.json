@@ -8,6 +8,9 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
+    "db:init": "tsx src/scripts/init-production-db.ts",
+    "seed:admin": "tsx src/scripts/seed-admin.ts",
+    "smoke:test": "tsx src/scripts/production-smoke-test.ts",
     "test": "tsx --test src/tests/auth.test.ts src/tests/lead.test.ts src/tests/followup.test.ts src/tests/analytics.test.ts src/tests/whatsapp.test.ts src/tests/ai.test.ts src/tests/security-audit.test.ts",
     "clean": "rimraf dist"
   },
@@ -22,7 +25,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.5",
     "morgan": "^1.10.0",
-    "zod": "^3.24.1"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -32,9 +35,8 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.10.7",
-    "rimraf": "^6.0.1",
+    "rimraf": "^4.1.4",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   }
 }
-

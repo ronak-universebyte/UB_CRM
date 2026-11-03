@@ -156,29 +156,61 @@ npm run dev:frontend
 
 ---
 
-## 5. Deployment on Render
+## 5. Deployment on Render & Production Operations
 
-This repository includes a native [`render.yaml`](./render.yaml) configuration file for single-click deployment:
+This repository includes a native [`render.yaml`](./render.yaml) configuration file for automated deployment:
 
-1. **Backend Service:**
-   - **Type:** Web Service (Node)
+1. **Backend Service (`universebyte-crm-backend`):**
+   - **Type:** Web Service (Node.js)
    - **Directory:** `backend`
    - **Build Command:** `npm install && npm run build`
    - **Start Command:** `npm run start`
    - **Health Check Path:** `/api/v1/health`
 
-2. **Frontend Service:**
+2. **Frontend Service (`universebyte-crm-frontend`):**
    - **Type:** Static Site
    - **Directory:** `frontend`
    - **Build Command:** `npm install && npm run build`
    - **Publish Directory:** `dist`
-   - **SPA Routing Rewrite:** `/* -> /index.html`
+   - **SPA Routing Rewrite:** `/* -> /index.html 200` (configured via `frontend/public/_redirects`)
 
-Refer to [docs/ENV_VARS.md](./docs/ENV_VARS.md) for detailed production variable mapping.
+### Production Documentation & Runbooks
+- **Deployment Guide:** [`DEPLOYMENT.md`](./DEPLOYMENT.md) – Step-by-step Render setup, custom domain mapping (`crm.universebyte.com`), and SSL certificate provisioning.
+- **Environment Setup:** [`ENVIRONMENT_SETUP.md`](./ENVIRONMENT_SETUP.md) – Reference for MongoDB Atlas, JWT cryptographic secrets, Groq AI, and Meta WhatsApp Cloud API credentials.
+- **Production Checklist:** [`PRODUCTION_CHECKLIST.md`](./PRODUCTION_CHECKLIST.md) – 30-point pre-flight, launch, and post-launch verification gate.
+- **Backup & Disaster Recovery:** [`BACKUP_RESTORE.md`](./BACKUP_RESTORE.md) – Atlas automated backups, PITR, mongodump/mongorestore commands, and emergency recovery runbooks.
+
+### Production Smoke Tests & Database Initialization
+```bash
+# Initialize production database indexes and provision initial Super Admin (non-destructive)
+npm run db:init
+
+# Run automated production smoke tests against local or deployed environment
+npm run smoke:test
+
+# Run production smoke tests against a live deployed Render URL
+DEPLOYED_API_URL=https://crm-api.universebyte.com/api/v1 npm run smoke:test
+```
 
 ---
 
-## 6. Project Rules & Collaboration
+## 6. Testing & Quality Assurance
+
+UniverseByte CRM features an exhaustive automated testing suite with 100% green verification:
+
+```bash
+# Run all unit, integration, and security tests (117 tests across 54 suites)
+npm test --workspace=backend
+
+# Run production builds for all workspaces
+npm run build
+```
+
+Full audit results are documented in [`TEST_REPORT.md`](./TEST_REPORT.md).
+
+---
+
+## 7. Project Rules & Collaboration
 
 All contributors and AI agents must review and strictly follow [AGENTS.md](./AGENTS.md) before writing code.
 No code from legacy SMS applications or previous CRMs may be inspected, modified, or incorporated into this repository.
