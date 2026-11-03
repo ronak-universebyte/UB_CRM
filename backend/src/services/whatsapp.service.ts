@@ -62,6 +62,7 @@ export class WhatsAppService {
     const isConfigured = Boolean(
       env.WHATSAPP_TOKEN &&
         env.WHATSAPP_TOKEN.trim().length > 10 &&
+        !env.WHATSAPP_TOKEN.includes('...') &&
         env.WHATSAPP_PHONE_NUMBER_ID &&
         env.WHATSAPP_PHONE_NUMBER_ID.trim().length > 3
     );
@@ -178,7 +179,15 @@ export class WhatsAppService {
    * 5. Send Official Message via Meta WhatsApp Cloud API (METHOD B)
    */
   static async sendOfficialMetaMessage(dto: ISendOfficialDto, actor: IAuthUser) {
-    if (!env.WHATSAPP_TOKEN || !env.WHATSAPP_PHONE_NUMBER_ID) {
+    const isConfigured = Boolean(
+      env.WHATSAPP_TOKEN &&
+        env.WHATSAPP_TOKEN.trim().length > 10 &&
+        !env.WHATSAPP_TOKEN.includes('...') &&
+        env.WHATSAPP_PHONE_NUMBER_ID &&
+        env.WHATSAPP_PHONE_NUMBER_ID.trim().length > 3
+    );
+
+    if (!isConfigured) {
       throw ApiError.badRequest(
         'Meta WhatsApp Cloud API is not configured. Please configure WHATSAPP_TOKEN and WHATSAPP_PHONE_NUMBER_ID in environment settings, or use manual Click-to-WhatsApp.'
       );

@@ -11,11 +11,13 @@ const envSchema = z.object({
   API_PREFIX: z.string().default('/api/v1'),
   MONGODB_URI: z.string().default('mongodb://localhost:27017/universebyte_crm'),
   JWT_ACCESS_SECRET: z.string().min(16, 'JWT_ACCESS_SECRET must be at least 16 chars').default('dev_jwt_access_secret_super_secure_key_1234'),
+  JWT_SECRET: z.string().optional(),
   JWT_ACCESS_EXPIRY: z.string().default('15m'),
   JWT_REFRESH_SECRET: z.string().min(16, 'JWT_REFRESH_SECRET must be at least 16 chars').default('dev_jwt_refresh_secret_super_secure_key_5678'),
   JWT_REFRESH_EXPIRY: z.string().default('7d'),
   CORS_ORIGIN: z.string().default('http://localhost:5173'),
   FRONTEND_URL: z.string().optional(),
+  CLIENT_URL: z.string().optional(),
   RATE_LIMIT_WINDOW_MS: z.string().default('900000').transform((val) => parseInt(val, 10)),
   RATE_LIMIT_MAX: z.string().default('100').transform((val) => parseInt(val, 10)),
 
@@ -36,11 +38,21 @@ const envSchema = z.object({
   GROQ_MODEL: z.string().default('llama-3.3-70b-versatile'),
   GROQ_TIMEOUT_MS: z.string().default('15000').transform((val) => parseInt(val, 10)),
 }).transform((data) => {
-  // Normalize CORS origins with FRONTEND_URL if provided
+  // Normalize CORS origins with FRONTEND_URL or CLIENT_URL if provided
   const origins = new Set<string>(data.CORS_ORIGIN.split(',').map((o) => o.trim()));
-  if (data.FRONTEND_URL) {
-    origins.add(data.FRONTEND_URL.trim());
+  const effectiveFrontendUrl = data.FRONTEND_URL || data.CLIENT_URL;
+  if (effectiveFrontendUrl) {
+    origins.add(effectiveFrontendUrl.trim());
   }
+
+  // Normalize JWT secret aliases (if JWT_SECRET provided, fallback if access/refresh secret is default)
+  const accessSecret = data.JWT_ACCESS_SECRET !== 'dev_jwt_access_secret_super_secure_key_1234'
+    ? data.JWT_ACCESS_SECRET
+    : (data.JWT_SECRET || data.JWT_ACCESS_SECRET);
+
+  const refreshSecret = data.JWT_REFRESH_SECRET !== 'dev_jwt_refresh_secret_super_secure_key_5678'
+    ? data.JWT_REFRESH_SECRET
+    : (data.JWT_SECRET ? `${data.JWT_SECRET}_refresh` : data.JWT_REFRESH_SECRET);
 
   // Normalize Meta / WhatsApp aliases
   const whatsappToken = data.META_ACCESS_TOKEN || data.WHATSAPP_TOKEN;
@@ -50,6 +62,10 @@ const envSchema = z.object({
 
   return {
     ...data,
+    JWT_ACCESS_SECRET: accessSecret,
+    JWT_REFRESH_SECRET: refreshSecret,
+    FRONTEND_URL: effectiveFrontendUrl,
+    CLIENT_URL: effectiveFrontendUrl,
     CORS_ORIGIN: Array.from(origins).join(','),
     WHATSAPP_TOKEN: whatsappToken,
     META_ACCESS_TOKEN: whatsappToken,
